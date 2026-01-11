@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>SATSUME JUMP</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Rajdhani:wght@400;600&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
@@ -12,26 +12,26 @@ body{background:linear-gradient(#0b1220,#02050c);font-family:'Rajdhani',Arial,sa
 #city-bg{position:absolute;inset:0;background:url('satsume-city-bg.png') repeat-x bottom/cover;animation:cityScroll 40s linear infinite;filter:brightness(.7);z-index:0}
 @keyframes cityScroll{from{background-position-x:0}to{background-position-x:-3000px}}
 #ground{position:absolute;bottom:0;width:100%;height:90px;background:linear-gradient(#1e293b,#020617);z-index:2}
-#player{position:absolute;bottom:90px;left:80px;width:80px;height:96px;background:url('satsume-sprite.png') center/80px 96px no-repeat;image-rendering:pixelated;z-index:3}
+#player{position:absolute;bottom:90px;left:5vw;width:12vw;max-width:80px;height:auto;background:url('satsume-sprite.png') center/contain no-repeat;image-rendering:pixelated;z-index:3}
 .obstacle{position:absolute;bottom:82px;z-index:3}
-.rock{width:100px;height:100px;background:url('rock-sprite.png') center bottom/contain no-repeat}
-.bush{width:80px;height:50px;background:url('bush-sprite.png') center/contain no-repeat}
-.tree{width:96px;height:160px;background:url('tree-sprite.png') center bottom/contain no-repeat}
-.laser{width:80px;height:80px;background:url('laser-sprite.png') center/contain no-repeat;filter:drop-shadow(0 0 12px red)}
-.coin{width:40px;height:40px;background:url('coin-sprite.png') center/contain no-repeat;position:absolute;z-index:3;animation:spin 1s linear infinite}
+.rock{width:12vw;max-width:100px;height:auto;background:url('rock-sprite.png') center bottom/contain no-repeat}
+.bush{width:10vw;max-width:80px;height:auto;background:url('bush-sprite.png') center/contain no-repeat}
+.tree{width:15vw;max-width:96px;height:auto;background:url('tree-sprite.png') center bottom/contain no-repeat}
+.laser{width:12vw;max-width:80px;height:auto;background:url('laser-sprite.png') center/contain no-repeat;filter:drop-shadow(0 0 12px red)}
+.coin{width:5vw;max-width:40px;height:auto;background:url('coin-sprite.png') center/contain no-repeat;position:absolute;z-index:3;animation:spin 1s linear infinite}
 @keyframes spin{from{transform:rotateY(0deg)}to{transform:rotateY(360deg)}}
-#score,#level,#highScore,#nusd{font-family:'Orbitron',sans-serif;letter-spacing:1px;text-shadow:0 0 8px rgba(56,189,248,.8)}
-#score{top:20px;left:20px;font-size:20px;color:#fff;position:absolute}
-#highScore{top:50px;left:20px;font-size:16px;color:#22d3ee;position:absolute}
-#level{top:80px;left:20px;font-size:16px;color:#a5f3fc;position:absolute}
-#nusd{top:110px;left:20px;font-size:16px;color:#facc15;position:absolute}
-#gameOver{font-family:'Orbitron',sans-serif;display:none;position:absolute;inset:0;background:rgba(0,0,0,.85);color:#fff;align-items:center;justify-content:center;flex-direction:column;font-size:32px}
-#gameOver button{margin-top:20px;padding:14px 30px;font-size:18px;border:none;border-radius:999px;background:#22d3ee;cursor:pointer}
+#score,#level,#highScore,#nusd{font-family:'Orbitron',sans-serif;letter-spacing:1px;text-shadow:0 0 8px rgba(56,189,248,.8);}
+#score{top:2vh;left:4vw;font-size:4vw;color:#fff;position:absolute}
+#highScore{top:6vh;left:4vw;font-size:3.5vw;color:#22d3ee;position:absolute}
+#level{top:10vh;left:4vw;font-size:3.5vw;color:#a5f3fc;position:absolute}
+#nusd{top:14vh;left:4vw;font-size:3.5vw;color:#facc15;position:absolute}
+#gameOver{font-family:'Orbitron',sans-serif;display:none;position:absolute;inset:0;background:rgba(0,0,0,.85);color:#fff;align-items:center;justify-content:center;flex-direction:column;font-size:8vw}
+#gameOver button{margin-top:4vh;padding:2vh 5vw;font-size:4vw;border:none;border-radius:999px;background:#22d3ee;cursor:pointer}
 #splash{text-align:center;position:fixed;inset:0;background:radial-gradient(circle at top,#0ea5e9,#02050c);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;z-index:10}
-#splash .logo{font-family:'Orbitron',sans-serif;text-transform:uppercase;font-size:72px;font-weight:900;letter-spacing:4px}
-#splash .subtitle{font-family:'Orbitron',sans-serif;letter-spacing:6px;font-size:30px;color:#38bdf8;margin-bottom:40px}
-#splash .logo-img{width:160px;height:auto;margin-bottom:20px;filter:drop-shadow(0 0 12px rgba(56,189,248,.8))}
-#splash button{padding:18px 42px;font-size:22px;border-radius:999px;border:none;background:linear-gradient(135deg,#22d3ee,#0ea5e9);font-weight:bold;cursor:pointer}
+#splash .logo{font-family:'Orbitron',sans-serif;text-transform:uppercase;font-size:12vw;font-weight:900;letter-spacing:0.5vw}
+#splash .subtitle{font-family:'Orbitron',sans-serif;letter-spacing:0.5vw;font-size:5vw;color:#38bdf8;margin-bottom:5vh}
+#splash .logo-img{width:40vw;height:auto;margin-bottom:3vh;filter:drop-shadow(0 0 12px rgba(56,189,248,.8))}
+#splash button{padding:2vh 5vw;font-size:5vw;border-radius:999px;border:none;background:linear-gradient(135deg,#22d3ee,#0ea5e9);font-weight:bold;cursor:pointer}
 </style>
 </head>
 <body>
@@ -49,7 +49,7 @@ body{background:linear-gradient(#0b1220,#02050c);font-family:'Rajdhani',Arial,sa
   <div id="nusd">NUSD: 0</div>
   <div id="player"></div>
   <div id="ground"></div>
-  <div id="gameOver"><div>GAME OVER</div><button id="restartBtn">PLAY AGAIN</button></div>
+  <div id="gameOver"><div>GAME OVER</div><button id="restartBtn">Main Lagi</button></div>
 </div>
 
 <audio id="jumpSfx" src="jump.wav" preload="auto" playsinline></audio>
@@ -95,10 +95,7 @@ function playSplashBgm(){
   bgmSplash.play().catch(()=>{});
 }
 
-splash.addEventListener('pointerdown',()=>{
-  unlockAudio();
-  playSplashBgm();
-},{once:true});
+splash.addEventListener('pointerdown',()=>{unlockAudio();playSplashBgm();},{once:true});
 
 bgmSplash.volume=0.35;
 bgmGame.volume=0.35;
@@ -107,19 +104,16 @@ let highScore=parseInt(localStorage.getItem('satsumeHighScore')||'0');
 highScoreText.textContent='High Score: '+highScore;
 let velocityY=0,gravity=1.1;
 let obstacles=[],coins=[];
-let score=0;
-scoreText.textContent='Score: '+score;
-let level=1;
-levelText.textContent='Level: '+level;
-let nusd=parseInt(localStorage.getItem('satsumeNUSD')||'0');
-nusdText.textContent='NUSD: '+nusd;
+let score=0;scoreText.textContent='Score: '+score;
+let level=1;levelText.textContent='Level: '+level;
+let nusd=parseInt(localStorage.getItem('satsumeNUSD')||'0');nusdText.textContent='NUSD: '+nusd;
 let obstaclePassedCount=0;
 let isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 let speed=isMobile?4.5:6;
 let gameOver=false;
 let obstacleTimer=null;
 let jumpCount=0;
-const maxJump=2,firstJump=21,secondJump=18;
+const maxJump=2,firstJump=isMobile?23:21,secondJump=isMobile?20:18;
 
 function jump(){
   unlockAudio();
@@ -187,14 +181,9 @@ function update(){
     if(parseInt(o.style.left)<-200){
       o.remove();
       obstacles.splice(i,1);
-      score++;
-      scoreText.textContent='Score: '+score;
-      localStorage.setItem('satsumeScore',score);
+      score++;scoreText.textContent='Score: '+score;localStorage.setItem('satsumeScore',score);
       obstaclePassedCount++;
-      if(obstaclePassedCount%25===0){
-        level++;
-        levelText.textContent='Level: '+level;
-      }
+      if(obstaclePassedCount%25===0){level++;levelText.textContent='Level: '+level;}
     }
   }
 
@@ -214,22 +203,15 @@ function update(){
 function endGame(){
   if(gameOver) return;
   gameOver=true;
-  gameOverSfx.currentTime=0;
-  gameOverSfx.play().catch(()=>{});
-  bgmGame.pause();
-  bgmSplash.pause();
+  gameOverSfx.currentTime=0;gameOverSfx.play().catch(()=>{});
+  bgmGame.pause();bgmSplash.pause();
   if(score>highScore){highScore=score;localStorage.setItem('satsumeHighScore',highScore);highScoreText.textContent='High Score: '+highScore;}
   gameOverScreen.style.display='flex';
 }
 
 function startGame(){
-  splash.style.display='none';
-  game.style.display='block';
-  bgmSplash.pause();
-  bgmGame.currentTime=0;
-  bgmGame.play().catch(()=>{});
-  startObstacleTimer();
-  requestAnimationFrame(update);
+  splash.style.display='none';game.style.display='block';bgmSplash.pause();bgmGame.currentTime=0;bgmGame.play().catch(()=>{});
+  startObstacleTimer();requestAnimationFrame(update);
 }
 
 startBtn.onclick=()=>{unlockAudio();startGame();};
