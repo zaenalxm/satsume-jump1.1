@@ -26,6 +26,7 @@ body{background:linear-gradient(#0b1220,#02050c);font-family:'Rajdhani',Arial,sa
 #level{top:80px;left:20px;font-size:16px;color:#a5f3fc;position:absolute}
 #nusd{top:110px;left:20px;font-size:16px;color:#facc15;position:absolute}
 #gameOver{font-family:'Orbitron',sans-serif;display:none;position:absolute;inset:0;background:rgba(0,0,0,.85);color:#fff;align-items:center;justify-content:center;flex-direction:column;font-size:32px}
+#gameOver .lastScore{font-size:24px;margin-bottom:10px}
 #gameOver button{margin-top:20px;padding:14px 30px;font-size:18px;border:none;border-radius:999px;background:#22d3ee;cursor:pointer}
 #splash{text-align:center;position:fixed;inset:0;background:radial-gradient(circle at top,#0ea5e9,#02050c);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;z-index:10}
 #splash .logo{font-family:'Orbitron',sans-serif;text-transform:uppercase;font-size:72px;font-weight:900;letter-spacing:4px}
@@ -49,7 +50,7 @@ body{background:linear-gradient(#0b1220,#02050c);font-family:'Rajdhani',Arial,sa
   <div id="nusd">NUSD: 0</div>
   <div id="player"></div>
   <div id="ground"></div>
-  <div id="gameOver"><div>GAME OVER</div><button id="restartBtn">PLAY AGAIN</button></div>
+  <div id="gameOver"><div class="lastScore">Last Score: 0</div><div>GAME OVER</div><button id="restartBtn">PLAY AGAIN</button></div>
 </div>
 
 <audio id="jumpSfx" src="jump.wav" preload="auto" playsinline></audio>
@@ -66,6 +67,7 @@ const scoreText=document.getElementById('score');
 const levelText=document.getElementById('level');
 const nusdText=document.getElementById('nusd');
 const gameOverScreen=document.getElementById('gameOver');
+const lastScoreText=document.querySelector('#gameOver .lastScore');
 const highScoreText=document.getElementById('highScore');
 const startBtn=document.getElementById('startBtn');
 const restartBtn=document.getElementById('restartBtn');
@@ -86,7 +88,6 @@ function unlockAudio(){
   });
   audioUnlocked=true;
 }
-
 function playSplashBgm(){
   if(!audioUnlocked) return;
   if(!bgmSplash.paused) return;
@@ -95,10 +96,7 @@ function playSplashBgm(){
   bgmSplash.play().catch(()=>{});
 }
 
-splash.addEventListener('pointerdown',()=>{
-  unlockAudio();
-  playSplashBgm();
-},{once:true});
+splash.addEventListener('pointerdown',()=>{unlockAudio();playSplashBgm();},{once:true});
 
 bgmSplash.volume=0.35;
 bgmGame.volume=0.35;
@@ -107,134 +105,40 @@ let highScore=parseInt(localStorage.getItem('satsumeHighScore')||'0');
 highScoreText.textContent='High Score: '+highScore;
 let velocityY=0,gravity=1.1;
 let obstacles=[],coins=[];
-let score=0;
-scoreText.textContent='Score: '+score;
-let level=1;
-levelText.textContent='Level: '+level;
-let nusd=parseInt(localStorage.getItem('satsumeNUSD')||'0');
-nusdText.textContent='NUSD: '+nusd;
+let score=0;scoreText.textContent='Score: '+score;
+let level=1;levelText.textContent='Level: '+level;
+let nusd=parseInt(localStorage.getItem('satsumeNUSD')||'0');nusdText.textContent='NUSD: '+nusd;
 let obstaclePassedCount=0;
 let isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-let speed=isMobile?4.5:6;
+let baseSpeed=isMobile?4.5:6;
+let speed=baseSpeed;
 let gameOver=false;
 let obstacleTimer=null;
 let jumpCount=0;
-const maxJump=2,firstJump=22,secondJump=18;
+const maxJump=2,firstJump=21,secondJump=18;
 
-function jump(){
-  unlockAudio();
-  if(gameOver) return;
-  if(jumpCount<maxJump){
-    velocityY=jumpCount===0?firstJump:secondJump;
-    jumpCount++;
-    jumpSfx.currentTime=0;
-    jumpSfx.play().catch(()=>{});
-  }
-}
-
+function jump(){unlockAudio();if(gameOver)return;if(jumpCount<maxJump){velocityY=jumpCount===0?firstJump:secondJump;jumpCount++;jumpSfx.currentTime=0;jumpSfx.play().catch(()=>{});}}
 document.addEventListener('keydown',e=>{if(e.code==='Space') jump();});
 document.addEventListener('touchstart',jump);
 
-function getRandomObstacle(){
-  const pool=['rock','bush'];
-  if(level>=2) pool.push('tree');
-  if(level>=3) pool.push('laser');
-  return pool[Math.floor(Math.random()*pool.length)];
-}
+function getRandomObstacle(){const pool=['rock','bush'];if(level>=2) pool.push('tree');if(level>=3) pool.push('laser');return pool[Math.floor(Math.random()*pool.length)];}
 
-function spawnObstacle(){
-  const o=document.createElement('div');
-  o.className='obstacle '+getRandomObstacle();
-  o.style.left=game.offsetWidth+'px';
-  o.style.bottom=o.classList.contains('laser')?(120+Math.random()*160)+'px':'90px';
-  game.appendChild(o);
-  obstacles.push(o);
+function spawnObstacle(){const o=document.createElement('div');o.className='obstacle '+getRandomObstacle();o.style.left=game.offsetWidth+'px';o.style.bottom=o.classList.contains('laser')?(120+Math.random()*160)+'px':'90px';game.appendChild(o);obstacles.push(o);
+if(Math.random()<0.85){const coinCount=1+Math.floor(Math.random()*3);for(let i=0;i<coinCount;i++){const c=document.createElement('div');c.className='coin';c.style.left=(game.offsetWidth+80+Math.random()*160+i*50)+'px';c.style.bottom=(140+Math.random()*220)+'px';game.appendChild(c);coins.push(c);}}}
 
-  if(Math.random()<0.85){
-    const coinCount=1+Math.floor(Math.random()*3);
-    for(let i=0;i<coinCount;i++){
-      const c=document.createElement('div');
-      c.className='coin';
-      c.style.left=(game.offsetWidth+80+Math.random()*160+i*50)+'px';
-      c.style.bottom=(140+Math.random()*220)+'px';
-      game.appendChild(c);
-      coins.push(c);
-    }
-  }
-}
+function startObstacleTimer(){clearTimeout(obstacleTimer);if(gameOver)return;const randomDelay=800+Math.random()*1200;obstacleTimer=setTimeout(()=>{spawnObstacle();startObstacleTimer();},randomDelay);}
 
-function startObstacleTimer(){
-  clearTimeout(obstacleTimer);
-  if(gameOver) return;
-  const randomDelay=800+Math.random()*1200;
-  obstacleTimer=setTimeout(()=>{spawnObstacle();startObstacleTimer();},randomDelay);
-}
+function update(){if(gameOver)return;let bottom=parseInt(player.style.bottom||90);bottom+=velocityY;velocityY-=gravity;if(bottom<=90){bottom=90;jumpCount=0;}player.style.bottom=bottom+'px';
+for(let i=obstacles.length-1;i>=0;i--){const o=obstacles[i];o.style.left=parseInt(o.style.left)-speed+'px';const p=player.getBoundingClientRect(),b=o.getBoundingClientRect();const pS=14,oS=12;if(p.right-pS>b.left+oS&&p.left+pS<b.right-oS&&p.bottom-pS>b.top+oS&&p.top+pS<b.bottom-oS) endGame();if(parseInt(o.style.left)<-200){o.remove();obstacles.splice(i,1);score++;scoreText.textContent='Score: '+score;localStorage.setItem('satsumeScore',score);obstaclePassedCount++;if(obstaclePassedCount%25===0){level++;levelText.textContent='Level: '+level;speed=baseSpeed+level*0.4;}}}
+for(let i=coins.length-1;i>=0;i--){const c=coins[i];c.style.left=parseInt(c.style.left)-speed+'px';const p=player.getBoundingClientRect(),b=c.getBoundingClientRect();const pS=18,cS=8;if(p.right-pS>b.left+cS&&p.left+pS<b.right-cS&&p.bottom-pS>b.top+cS&&p.top+pS<b.bottom-cS){c.remove();coins.splice(i,1);nusd++;nusdText.textContent='NUSD: '+nusd;localStorage.setItem('satsumeNUSD',nusd);coinSfx.currentTime=0;coinSfx.play().catch(()=>{});} else if(parseInt(c.style.left)<-100){c.remove();coins.splice(i,1);}}
+requestAnimationFrame(update);}
 
-function update(){
-  if(gameOver) return;
-  let bottom=parseInt(player.style.bottom||90);
-  bottom+=velocityY;
-  velocityY-=gravity;
-  if(bottom<=90){bottom=90;jumpCount=0;}
-  player.style.bottom=bottom+'px';
+function endGame(){if(gameOver)return;gameOver=true;gameOverSfx.currentTime=0;gameOverSfx.play().catch(()=>{});bgmGame.pause();bgmSplash.pause();lastScoreText.textContent='Last Score: '+score;if(score>highScore){highScore=score;localStorage.setItem('satsumeHighScore',highScore);highScoreText.textContent='High Score: '+highScore;}gameOverScreen.style.display='flex';}
 
-  for(let i=obstacles.length-1;i>=0;i--){
-    const o=obstacles[i];
-    o.style.left=parseInt(o.style.left)-speed+'px';
-    const p=player.getBoundingClientRect(),b=o.getBoundingClientRect();
-    const pS=14,oS=12;
-    if(p.right-pS>b.left+oS&&p.left+pS<b.right-oS&&p.bottom-pS>b.top+oS&&p.top+pS<b.bottom-oS) endGame();
-    if(parseInt(o.style.left)<-200){
-      o.remove();
-      obstacles.splice(i,1);
-      score++;
-      scoreText.textContent='Score: '+score;
-      localStorage.setItem('satsumeScore',score);
-      obstaclePassedCount++;
-      if(obstaclePassedCount%25===0){
-        level++;
-        levelText.textContent='Level: '+level;
-      }
-    }
-  }
-
-  for(let i=coins.length-1;i>=0;i--){
-    const c=coins[i];
-    c.style.left=parseInt(c.style.left)-speed+'px';
-    const p=player.getBoundingClientRect(),b=c.getBoundingClientRect();
-    const pS=18,cS=8;
-    if(p.right-pS>b.left+cS&&p.left+pS<b.right-cS&&p.bottom-pS>b.top+cS&&p.top+pS<b.bottom-cS){
-      c.remove();coins.splice(i,1);nusd++;nusdText.textContent='NUSD: '+nusd;localStorage.setItem('satsumeNUSD',nusd);
-      coinSfx.currentTime=0;coinSfx.play().catch(()=>{});
-    } else if(parseInt(c.style.left)<-100){c.remove();coins.splice(i,1);}
-  }
-  requestAnimationFrame(update);
-}
-
-function endGame(){
-  if(gameOver) return;
-  gameOver=true;
-  gameOverSfx.currentTime=0;
-  gameOverSfx.play().catch(()=>{});
-  bgmGame.pause();
-  bgmSplash.pause();
-  if(score>highScore){highScore=score;localStorage.setItem('satsumeHighScore',highScore);highScoreText.textContent='High Score: '+highScore;}
-  gameOverScreen.style.display='flex';
-}
-
-function startGame(){
-  splash.style.display='none';
-  game.style.display='block';
-  bgmSplash.pause();
-  bgmGame.currentTime=0;
-  bgmGame.play().catch(()=>{});
-  startObstacleTimer();
-  requestAnimationFrame(update);
-}
+function startGame(){splash.style.display='none';game.style.display='block';bgmSplash.pause();bgmGame.currentTime=0;bgmGame.play().catch(()=>{});startObstacleTimer();requestAnimationFrame(update);}
 
 startBtn.onclick=()=>{unlockAudio();startGame();};
 restartBtn.onclick=()=>location.reload();
 </script>
 </body>
 </html>
-
